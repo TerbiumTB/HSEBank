@@ -1,10 +1,15 @@
+using Finances.Accounts;
+using Finances.Categories;
 using Finances.Operations;
 
 namespace Finances.Commands;
 
 public class AddOperationCommand : ICommand
 {
-    private IIndexedStorage<Operation> Storage { get; }
+    private IIndexedStorage<Operation> Operations { get; }
+    private IIndexedStorage<BankAccount> Accounts { get; }
+    private IIndexedStorage<Category> Categories { get; }
+
     // private FinanceFacade Storage { get; }
     private Guid AccountId { get; }
     private Guid CategoryId { get; }
@@ -13,10 +18,13 @@ public class AddOperationCommand : ICommand
     private string? Description { get; }
 
 
-    public AddOperationCommand(IIndexedStorage<Operation> storage, Guid accountId, Guid categoryId, int amount, DateTime date,
+    public AddOperationCommand(IIndexedStorage<Operation> operations, IIndexedStorage<BankAccount> accounts, IIndexedStorage<Category> categories, Guid accountId, Guid categoryId, int amount,
+        DateTime date,
         string? description)
     {
-        Storage = storage;
+        Operations = operations;
+        Accounts = accounts;
+        Categories = categories;
         AccountId = accountId;
         CategoryId = categoryId;
         Amount = amount;
@@ -27,11 +35,25 @@ public class AddOperationCommand : ICommand
     public void Execute()
     {
         var operation = OperationFactory.CreateOperation(AccountId, CategoryId, Amount, Date, Description);
-        if (operation != null)
+        if (operation is null)
         {
-            Storage.Insert(operation);
+            Console.WriteLine("Invalid operation");
+            return;
         }
-        Console.WriteLine("Invalid operation");
+
+        Operations.Insert(operation);
+        var account = Accounts.Find(AccountId)!;
+        var category = Categories.Find(CategoryId)!;
+        if (category.Type == CategoryType.Expense)
+        {
+            account.Debit(Amount);
+        }
+        else if (category.Type == CategoryType.Income)
+        {
+            account.Credit(Amount);
+        }
+
+        ;
         // Storage.Insert(OperationFactory.CreateOperation(AccountId, CategoryId, Amount, Date, Description)); 
     }
 }

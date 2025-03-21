@@ -3,21 +3,19 @@ using Finances.Format;
 
 namespace Finances.Operations;
 
-
-
 public class Operation : IModel
 {
     public Guid Id { get; }
-    public Guid BankAccountId { get;  }
-    public Guid CategoryId { get;  }
+    public Guid BankAccountId { get; }
+    public Guid CategoryId { get; }
     public int Amount { get; }
     public DateTime Date { get; }
     public string? Description { get; set; }
 
     public Operation()
     {
-        
     }
+
     public Operation(Guid id, Guid bankAccountId, Guid categoryId, int amount, DateTime date, string? description)
     {
         Id = id;
@@ -27,13 +25,15 @@ public class Operation : IModel
         Date = date;
         Description = description;
     }
+
     public string OnFormat(IFormatter formatter)
     {
         return formatter.Format(this);
     }
-    
+
     public override string ToString()
     {
-        return Id + "\tBankAccountId: " + BankAccountId + "\tCategoryId: " + CategoryId + "\tAmount: " + Amount + "\tDate: " + Date + "\tDescription: " + Description;
+        return $"\"{Id}\" \t BankAccountId: {BankAccountId}\t CategoryId: {CategoryId}\t " +
+               $"Amount: {Amount}\t Date: {Date}\t Description: {Description}";
     }
 }

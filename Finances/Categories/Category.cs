@@ -29,6 +29,7 @@ public class Category : IModel
     
     public override string ToString()
     {
-        return Id + "\tName: " + Name + "\tType: " + Type;
+        return $"\"{Id}\" \t Name: {Name}\t Type: {Type}";
+
     }
 }

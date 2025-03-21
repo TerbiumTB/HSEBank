@@ -168,7 +168,7 @@ class Program
                     var description = ansDialog.Scan() == Answer.Yes ? stringDialog.Scan() : null;
                     
                     // commands.Add(new ADd);
-                    commands.Add(new AddOperationCommand(operations, accountId, categoryId, amount, date, description));
+                    commands.Add(new AddOperationCommand(operations, accounts, categories, accountId, categoryId, amount, date, description));
                     break;
 
                 case CommandType.Show:
